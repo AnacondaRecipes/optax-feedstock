@@ -41,7 +41,17 @@ test:
 about:
   home: https://github.com/deepmind/optax
   summary: A gradient processing and optimisation library in JAX.
+  description: |
+    Optax is a gradient processing and optimization library for JAX.
+
+    Optax is designed to facilitate research by providing building blocks that can be easily recombined in custom ways.
+
+    The goals are to:
+      - Provide simple, well-tested, efficient implementations of core components.
+      - Improve research productivity by enabling to easily combine low level ingredients into custom optimisers (or other gradient processing components).
+      - Accelerate adoption of new ideas by making it easy for anyone to contribute.
   license: Apache-2.0
+  license_family: Apache
   license_file: LICENSE
 
 extra:
