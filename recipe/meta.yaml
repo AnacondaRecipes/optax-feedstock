@@ -28,7 +28,8 @@ requirements:
     - chex >=0.1.5
     - jax >=0.1.55
     - jaxlib >=0.1.37
-    - numpy >=1.18.0,<2 
+    - numpy >=1.21,<2  # [py>=310 or (osx and arm64)]
+    - numpy >=1.20,<2  # [py<310 and not (osx and arm64)]
     - typing_extensions >=3.10
 
 test:
