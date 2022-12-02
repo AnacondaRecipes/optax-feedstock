@@ -12,20 +12,24 @@ source:
 
 build:
   number: 0
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
+  # ppc64le, s390x and win are all unsupported by jax/jaxlib
+  skip: true  # [ppc64le or s390x or win or py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
   host:
-    - python >=3.6
+    - python
     - pip
+    - setuptools
+    - wheel
   run:
-    - python >=3.6
+    - python
     - absl-py >=0.7.1
-    - chex >=0.0.4
+    - chex >=0.1.5
     - jax >=0.1.55
     - jaxlib >=0.1.37
-    - numpy >=1.18.0
+    - numpy >=1.21,<2  # [py>=310 or (osx and arm64)]
+    - numpy >=1.20,<2  # [py<310 and not (osx and arm64)]
     - typing_extensions >=3.10
 
 test:
@@ -39,10 +43,25 @@ test:
 about:
   home: https://github.com/deepmind/optax
   summary: A gradient processing and optimisation library in JAX.
+  description: |
+    Optax is a gradient processing and optimization library for JAX.
+
+    Optax is designed to facilitate research by providing building blocks that can be easily recombined in custom ways.
+
+    The goals are to:
+      - Provide simple, well-tested, efficient implementations of core components.
+      - Improve research productivity by enabling to easily combine low level ingredients into custom optimisers (or other gradient processing components).
+      - Accelerate adoption of new ideas by making it easy for anyone to contribute.
   license: Apache-2.0
+  license_family: Apache
   license_file: LICENSE
+  dev_url: https://github.com/deepmind/optax
+  doc_url: https://optax.readthedocs.io/
 
 extra:
   recipe-maintainers:
     - PhilipVinc
     - hbq1
+  skip-lints:
+    - missing_license_url
+    - missing_doc_source_url
