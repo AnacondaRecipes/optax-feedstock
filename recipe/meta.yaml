@@ -60,3 +60,6 @@ extra:
   recipe-maintainers:
     - PhilipVinc
     - hbq1
+  skip-lints:
+    - missing_license_url
+    - missing_doc_source_url
