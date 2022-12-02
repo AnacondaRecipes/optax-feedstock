@@ -12,7 +12,8 @@ source:
 
 build:
   number: 0
-  skip: True  # [py<37]
+  # ppc64le, s390x and win are all unsupported by jax/jaxlib
+  skip: true  # [ppc64le or s390x or win or py<37]
   script: {{ PYTHON }} -m pip install . --no-deps -vv
 
 requirements:
