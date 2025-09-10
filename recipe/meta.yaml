@@ -1,42 +1,105 @@
 {% set name = "optax" %}
-{% set version = "0.1.4" %}
-
+{% set version = "0.2.5" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/optax-{{ version }}.tar.gz
-  sha256: fb7a0550d57a6636164a3de25986a8a19be8ff6431fcdf1225b4e05175810f22
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b2e38c7aea376186deae758ba7a258e6ef760c6f6131e9e11bc561c65386d594
 
 build:
   number: 0
-  # ppc64le, s390x and win are all unsupported by jax/jaxlib
-  skip: true  # [ppc64le or s390x or win or py<37]
-  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  skip: true  # [py<310]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   host:
     - python
     - pip
-    - setuptools
-    - wheel
+    - flit-core >=3.2,<4
   run:
     - python
     - absl-py >=0.7.1
-    - chex >=0.1.5
-    - jax >=0.1.55
-    - jaxlib >=0.1.37
-    - numpy >=1.21,<2  # [py>=310 or (osx and arm64)]
-    - numpy >=1.20,<2  # [py<310 and not (osx and arm64)]
-    - typing_extensions >=3.10
+    - chex >=0.1.87
+    - jax >=0.4.27
+    - jaxlib >=0.4.27
+    - numpy >=1.18.0
 
 test:
   imports:
     - optax
+    - optax._src
+    - optax._src.alias
+    - optax._src.base
+    - optax._src.factorized
+    - optax._src.linear_algebra
+    - optax._src.linesearch
+    - optax._src.lookahead
+    - optax._src.numerics
+    - optax._src.transform
+    - optax._src.update
+    - optax._src.utils
+    - optax.assignment._hungarian_algorithm
+    - optax.contrib
+    - optax.contrib._acprop
+    - optax.contrib._ademamix
+    - optax.contrib._adopt
+    - optax.contrib._cocob
+    - optax.contrib._complex_valued
+    - optax.contrib._dadapt_adamw
+    - optax.contrib._dog
+    - optax.contrib._mechanic
+    - optax.contrib._momo
+    - optax.contrib._muon
+    - optax.contrib._privacy
+    - optax.contrib._prodigy
+    - optax.contrib._reduce_on_plateau
+    - optax.contrib._sam
+    - optax.contrib._schedule_free
+    - optax.contrib._sophia
+    - optax.losses
+    - optax.losses._classification
+    - optax.losses._fenchel_young
+    - optax.losses._ranking
+    - optax.losses._regression
+    - optax.losses._self_supervised
+    - optax.losses._smoothing
+    - optax.monte_carlo
+    - optax.monte_carlo.control_variates
+    - optax.monte_carlo.stochastic_gradient_estimators
+    - optax.perturbations
+    - optax.perturbations._make_pert
+    - optax.projections._projections
+    - optax.schedules
+    - optax.schedules._inject
+    - optax.schedules._join
+    - optax.schedules._schedule
+    - optax.second_order
+    - optax.second_order._fisher
+    - optax.second_order._hessian
+    - optax.transforms
+    - optax.transforms._accumulation
+    - optax.transforms._adding
+    - optax.transforms._clipping
+    - optax.transforms._combining
+    - optax.transforms._conditionality
+    - optax.transforms._constraining
+    - optax.transforms._freezing
+    - optax.transforms._layouts
+    - optax.transforms._masking
+    - optax.tree
+    - optax.tree_utils
+    - optax.tree_utils._casting
+    - optax.tree_utils._random
+    - optax.tree_utils._state_utils
+    - optax.tree_utils._tree_math
   commands:
     - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    # Missing flax dependency in channels to run upstream tests
+    # - pytest -v optax
   requires:
     - pip
 
@@ -45,23 +108,18 @@ about:
   summary: A gradient processing and optimisation library in JAX.
   description: |
     Optax is a gradient processing and optimization library for JAX.
-
     Optax is designed to facilitate research by providing building blocks that can be easily recombined in custom ways.
-
     The goals are to:
-      - Provide simple, well-tested, efficient implementations of core components.
-      - Improve research productivity by enabling to easily combine low level ingredients into custom optimisers (or other gradient processing components).
-      - Accelerate adoption of new ideas by making it easy for anyone to contribute.
+    - Provide simple, well-tested, efficient implementations of core components.
+    - Improve research productivity by enabling to easily combine low level ingredients into custom optimisers (or other gradient processing components).
+    - Accelerate adoption of new ideas by making it easy for anyone to contribute.
   license: Apache-2.0
   license_family: Apache
   license_file: LICENSE
   dev_url: https://github.com/deepmind/optax
-  doc_url: https://optax.readthedocs.io/
+  doc_url: https://optax.readthedocs.io
 
 extra:
   recipe-maintainers:
     - PhilipVinc
     - hbq1
-  skip-lints:
-    - missing_license_url
-    - missing_doc_source_url
