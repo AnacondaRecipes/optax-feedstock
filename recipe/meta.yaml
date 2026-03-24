@@ -22,17 +22,19 @@ requirements:
   run:
     - python
     - absl-py >=0.7.1
-    - chex >=0.1.87
-    - jax >=0.4.27
-    - jaxlib >=0.4.27
+    - jax >=0.5.3
+    - jaxlib >=0.5.3
     - numpy >=1.18.0
 
 test:
+  source_files:
+    - optax/optax_test.py
   imports:
     - optax
     - optax._src
     - optax._src.alias
     - optax._src.base
+    - optax._src.deprecations
     - optax._src.factorized
     - optax._src.linear_algebra
     - optax._src.linesearch
@@ -50,6 +52,8 @@ test:
     - optax.contrib._complex_valued
     - optax.contrib._dadapt_adamw
     - optax.contrib._dog
+    - optax.contrib._galore
+    - optax.contrib._madgrad
     - optax.contrib._mechanic
     - optax.contrib._momo
     - optax.contrib._muon
@@ -59,16 +63,16 @@ test:
     - optax.contrib._sam
     - optax.contrib._schedule_free
     - optax.contrib._sophia
+    - optax.experimental
     - optax.losses
     - optax.losses._classification
     - optax.losses._fenchel_young
     - optax.losses._ranking
     - optax.losses._regression
+    - optax.losses._segmentation
     - optax.losses._self_supervised
     - optax.losses._smoothing
-    - optax.monte_carlo
-    - optax.monte_carlo.control_variates
-    - optax.monte_carlo.stochastic_gradient_estimators
+    - optax.microbatching._microbatching
     - optax.perturbations
     - optax.perturbations._make_pert
     - optax.projections._projections
@@ -76,9 +80,7 @@ test:
     - optax.schedules._inject
     - optax.schedules._join
     - optax.schedules._schedule
-    - optax.second_order
-    - optax.second_order._fisher
-    - optax.second_order._hessian
+    - optax.second_order._deprecated
     - optax.transforms
     - optax.transforms._accumulation
     - optax.transforms._adding
@@ -89,6 +91,7 @@ test:
     - optax.transforms._freezing
     - optax.transforms._layouts
     - optax.transforms._masking
+    - optax.transforms._monitoring
     - optax.tree
     - optax.tree_utils
     - optax.tree_utils._casting
@@ -98,10 +101,10 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    # Missing flax dependency in channels to run upstream tests
-    # - pytest -v optax
+    - pytest -v optax/optax_test.py
   requires:
     - pip
+    - pytest
 
 about:
   home: https://github.com/deepmind/optax
