@@ -1,5 +1,5 @@
 {% set name = "optax" %}
-{% set version = "0.2.5" %}
+{% set version = "0.2.8" %}
 
 package:
   name: {{ name|lower }}
@@ -7,11 +7,12 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: b2e38c7aea376186deae758ba7a258e6ef760c6f6131e9e11bc561c65386d594
+  sha256: 5b225b35066fc3eebaa4d798f1b4173b4d57d1a480610908981f8343b50af0b0
 
 build:
   number: 0
-  skip: true  # [py<310]
+  # jax >=0.5.3 is not available for the py<311
+  skip: true  # [py<311]
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
@@ -22,9 +23,8 @@ requirements:
   run:
     - python
     - absl-py >=0.7.1
-    - chex >=0.1.87
-    - jax >=0.4.27
-    - jaxlib >=0.4.27
+    - jax >=0.5.3
+    - jaxlib >=0.5.3
     - numpy >=1.18.0
 
 test:
@@ -33,6 +33,7 @@ test:
     - optax._src
     - optax._src.alias
     - optax._src.base
+    - optax._src.deprecations
     - optax._src.factorized
     - optax._src.linear_algebra
     - optax._src.linesearch
@@ -50,6 +51,8 @@ test:
     - optax.contrib._complex_valued
     - optax.contrib._dadapt_adamw
     - optax.contrib._dog
+    - optax.contrib._galore
+    - optax.contrib._madgrad
     - optax.contrib._mechanic
     - optax.contrib._momo
     - optax.contrib._muon
@@ -59,16 +62,16 @@ test:
     - optax.contrib._sam
     - optax.contrib._schedule_free
     - optax.contrib._sophia
+    - optax.experimental
     - optax.losses
     - optax.losses._classification
     - optax.losses._fenchel_young
     - optax.losses._ranking
     - optax.losses._regression
+    - optax.losses._segmentation
     - optax.losses._self_supervised
     - optax.losses._smoothing
-    - optax.monte_carlo
-    - optax.monte_carlo.control_variates
-    - optax.monte_carlo.stochastic_gradient_estimators
+    - optax.microbatching._microbatching
     - optax.perturbations
     - optax.perturbations._make_pert
     - optax.projections._projections
@@ -76,9 +79,7 @@ test:
     - optax.schedules._inject
     - optax.schedules._join
     - optax.schedules._schedule
-    - optax.second_order
-    - optax.second_order._fisher
-    - optax.second_order._hessian
+    - optax.second_order._deprecated
     - optax.transforms
     - optax.transforms._accumulation
     - optax.transforms._adding
@@ -89,6 +90,7 @@ test:
     - optax.transforms._freezing
     - optax.transforms._layouts
     - optax.transforms._masking
+    - optax.transforms._monitoring
     - optax.tree
     - optax.tree_utils
     - optax.tree_utils._casting
@@ -98,13 +100,17 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    # Missing flax dependency in channels to run upstream tests
-    # - pytest -v optax
+    # Some tests cannot be run with current version of flax/jax due to flax constraint.
+    # ERR: flax 0.12.1 has requirement jax>=0.8.1, but you have jax 0.7.2.
+    - pytest --pyargs optax --ignore=${SP_DIR}/optax/_src/linear_algebra_test.py --ignore=${SP_DIR}/optax/transforms/_accumulation_test.py  # [unix]
+    - pytest --pyargs optax --ignore=%SP_DIR%/optax/_src/linear_algebra_test.py --ignore=%SP_DIR%/optax/transforms/_accumulation_test.py  # [win]
   requires:
     - pip
+    - pytest
+    - scikit-learn
 
 about:
-  home: https://github.com/deepmind/optax
+  home: https://github.com/google-deepmind/optax
   summary: A gradient processing and optimisation library in JAX.
   description: |
     Optax is a gradient processing and optimization library for JAX.
@@ -116,7 +122,7 @@ about:
   license: Apache-2.0
   license_family: Apache
   license_file: LICENSE
-  dev_url: https://github.com/deepmind/optax
+  dev_url: https://github.com/google-deepmind/optax
   doc_url: https://optax.readthedocs.io
 
 extra:
