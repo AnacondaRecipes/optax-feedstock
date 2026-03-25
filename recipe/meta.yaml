@@ -100,11 +100,14 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    # Tests cannot be run with current version of flax/jax due to flax constraint.
+    # Some tests cannot be run with current version of flax/jax due to flax constraint.
     # ERR: flax 0.12.1 has requirement jax>=0.8.1, but you have jax 0.7.2.
-    # - pytest -v --pyargs optax
+    - pytest --pyargs optax --ignore=${SP_DIR}/optax/_src/linear_algebra_test.py --ignore=${SP_DIR}/optax/transforms/_accumulation_test.py  # [unix]
+    - pytest --pyargs optax --ignore=%SP_DIR%/optax/_src/linear_algebra_test.py --ignore=%SP_DIR%/optax/transforms/_accumulation_test.py  # [win]
   requires:
     - pip
+    - pytest
+    - scikit-learn
 
 about:
   home: https://github.com/google-deepmind/optax
