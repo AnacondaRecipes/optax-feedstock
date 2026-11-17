@@ -1,17 +1,17 @@
 {% set name = "optax" %}
-{% set version = "0.2.8" %}
+{% set version = "0.2.9" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 5b225b35066fc3eebaa4d798f1b4173b4d57d1a480610908981f8343b50af0b0
+  sha256: fcaa7e34c37ab2875c72d91e55374ff02a7ef6463b79fdb45bd3d65c6d4d61c5
 
 build:
   number: 0
-  # jax >=0.5.3 is not available for the py<311
+  # upstream allows py>=3.10, but jax >=0.5.3 on pkgs/main is only built for py>=3.11
   skip: true  # [py<311]
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
@@ -102,8 +102,8 @@ test:
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     # Some tests cannot be run with current version of flax/jax due to flax constraint.
     # ERR: flax 0.12.1 has requirement jax>=0.8.1, but you have jax 0.7.2.
-    - pytest --pyargs optax --ignore=${SP_DIR}/optax/_src/linear_algebra_test.py --ignore=${SP_DIR}/optax/transforms/_accumulation_test.py  # [unix]
-    - pytest --pyargs optax --ignore=%SP_DIR%/optax/_src/linear_algebra_test.py --ignore=%SP_DIR%/optax/transforms/_accumulation_test.py  # [win]
+    - pytest -vv --pyargs optax --ignore=${SP_DIR}/optax/_src/linear_algebra_test.py --ignore=${SP_DIR}/optax/transforms/_accumulation_test.py  # [unix]
+    - pytest -vv --pyargs optax --ignore=%SP_DIR%/optax/_src/linear_algebra_test.py --ignore=%SP_DIR%/optax/transforms/_accumulation_test.py  # [win]
   requires:
     - pip
     - pytest
