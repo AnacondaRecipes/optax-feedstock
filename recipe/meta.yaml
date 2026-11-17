@@ -1,5 +1,5 @@
 {% set name = "optax" %}
-{% set version = "0.2.8" %}
+{% set version = "0.2.9" %}
 
 package:
   name: {{ name|lower }}
@@ -7,12 +7,12 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 5b225b35066fc3eebaa4d798f1b4173b4d57d1a480610908981f8343b50af0b0
+  sha256: fcaa7e34c37ab2875c72d91e55374ff02a7ef6463b79fdb45bd3d65c6d4d61c5
 
 build:
   number: 0
   # jax >=0.5.3 is not available for the py<311
-  skip: true  # [py<311]
+  skip: true  # [py<310]
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
